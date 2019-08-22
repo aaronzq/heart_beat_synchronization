@@ -102,13 +102,13 @@ for i = 1:numOfSlice
     images= zeros( height , width , floor(numOfPeriod*floor(t_p/h_T))+2 , 'uint16' );
 
     count = 1;
-    for j = t(i)+1+floor(t_p/h_T) : t(i)+2+floor(numOfPeriod*floor(t_p/h_T))+floor(t_p/h_T)
+    for j = t(i)+1+floor(t_p/h_T) : t(i)+floor(numOfPeriod*floor(t_p/h_T))+floor(t_p/h_T)
 
         images(:,:,count) = imread([baseDir '\' int2str(i) '\' imageList(j).name]);
         count = count + 1;
     end
     
-    for j = 1:2+floor(numOfPeriod*floor(t_p/h_T))
+    for j = 1:floor(numOfPeriod*floor(t_p/h_T))
 
         imwrite(uint16(images(:,:,j)),[outputDir '\' int2str(i) '\' int2str(j) '.tif']);
     end 
@@ -123,7 +123,7 @@ end
 mkdir(byStateDir);
 
 %% align all slice by state
-for i = 1:2+floor(numOfPeriod*floor(t_p/h_T))
+for i = 1:floor(numOfPeriod*floor(t_p/h_T))
 
     mkdir([byStateDir '\' int2str(i)]);
     % copy image into the corresponding folder
