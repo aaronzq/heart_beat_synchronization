@@ -1,16 +1,16 @@
 tic;
-baseDir = ['..\RawData'];
+baseDir = ['D:\Zhaoqiang\RawData'];
 outputDir = [baseDir '\output'];
 
 h_T = 5;  %exposure time (ms)
-numOfSlice = 55; %how many slices recorded in sequence
+numOfSlice = 69; %how many slices recorded in sequence
 numOfImage = 450; %how many images recorded at single slice
-systolicPoint_1st = 27;
-systolicPoint_4st = 263;
+systolicPoint_1st = 80;
+systolicPoint_4st = 329;
 
-lightfield_ref = 27;
+lightfield_ref = 35;
 
-numOfPeriod = 4; %how many period you want to output
+numOfPeriod = 2; %how many period you want to output
 
 
 periodTh1 = (systolicPoint_4st-systolicPoint_1st)/3*h_T*0.85 - 30;
@@ -102,7 +102,7 @@ for i = 1:numOfSlice
     images= zeros( height , width , floor(numOfPeriod*floor(t_p/h_T))+2 , 'uint16' );
 
     count = 1;
-    for j = t(i)+1+floor(t_p/h_T) : t(i)+floor(numOfPeriod*floor(t_p/h_T))+floor(t_p/h_T)
+    for j = t(i)+1 : t(i)+floor(numOfPeriod*floor(t_p/h_T))
 
         images(:,:,count) = imread([baseDir '\' int2str(i) '\' imageList(j).name]);
         count = count + 1;
@@ -174,6 +174,6 @@ end
 
 fprintf('Consumed time in total: %f\n',toc);
 fprintf('Light-sheet image depth: %d\n',numOfSlice-1);
-fprintf('Synced index for light field: %d\n',t(lightfield_ref)+floor(t_p/h_T));
+fprintf('Synced index for light field: %d\n',t(lightfield_ref));
 
 % 
