@@ -1,6 +1,8 @@
-# Retrospective heartbeat synchronization for 4D light-sheet imaging
+# Retrospective cardiac gating for 4D zebrafish light-sheet microscopy
 
-Reconstruct a **pseudo-3D zebrafish embryo heart over time** from light-sheet image sequences acquired at successive depths. At each depth, the microscope records several heartbeats before moving to the next layer. This project estimates the heartbeat period and the temporal offsets between layers, selects aligned image sequences, and assembles one 3D TIFF volume per time state.
+MATLAB code for **retrospective cardiac gating**, also described as post-acquisition heartbeat synchronization. It aligns time-lapse recordings from successive depths in light-sheet fluorescence microscopy (LSFM), also known as selective plane illumination microscopy (SPIM), to reconstruct a **pseudo-3D zebrafish embryo heart over time**.
+
+At each depth, the microscope records several heartbeats before moving to the next layer. This project estimates the heartbeat period and the temporal offsets between layers, selects aligned image sequences, and assembles one 3D TIFF volume per time state.
 
 The root scripts provide the light-sheet-only synchronization workflow. The [PLOSCompBio/](PLOSCompBio/README.md) directory preserves the historical light-sheet/light-field synchronization and registration workflow.
 
@@ -9,6 +11,9 @@ The present repository organization and documentation preserve the existing nume
 ## How it works
 
 The recordings start at different cardiac phases. Similar motion in nearby layers provides a temporal reference for aligning them. The resulting volumes combine images acquired at different times, assuming repeatable cardiac motion throughout the scan.
+
+![Synthetic illustration of differently phased layer recordings, aligned layers, and an assembled volume over one cycle](docs/images/retrospective-gating.svg)
+
 
 ```mermaid
 flowchart LR
@@ -26,12 +31,12 @@ For an aligned time state `k`, the volume takes frame `t(i) + k` from layer `i`,
 
 ## Requirements
 
-- **MATLAB on Windows.** The preserved image-loading helpers use Windows path separators. Other operating systems have not been validated.
-- **Parallel Computing Toolbox is optional**, used only when `useParallel = true`. Serial processing is the default. Period optimization uses MATLAB's `fminbnd`; it does not require Optimization Toolbox.
-- Enough memory to load complete layer recordings as `double` arrays. A single `H × W × F` sequence uses approximately `8 × H × W × F` bytes before temporary arrays; pair matching loads two sequences. Parallel workers multiply this demand.
+- **MATLAB**
+- **Parallel Computing Toolbox (optional)**
 
+## Steps
 
-## Arrange your input first
+### Arrange your input data first
 
 Set `lsSourcePath` to a folder with **one subfolder per depth**, named `1`, `2`, …, `numOfSlice` in the desired z order. Each subfolder must contain a time sequence of **single-page, grayscale `.tif` files**.
 
@@ -60,7 +65,7 @@ Input requirements:
 
 The root workflow assumes this arrangement already exists. It does not copy, rename, crop, or otherwise prepare input data. If needed, consult the separate [preparation utilities](preprocessing/README.md) before starting.
 
-## Run the reconstruction
+### Run the reconstruction
 
 1. Open MATLAB and set its current folder to this repository's root.
 2. Edit [STEP1_init.m](STEP1_init.m). Replace both example paths and the acquisition/heartbeat settings with values for your recording.
@@ -82,7 +87,7 @@ The script runs these five steps in order:
 
 You can also run the five scripts individually in this order. They share a generated `ls_recon_para.mat` in the root; later steps load it rather than rereading settings from `STEP1_init.m`. Initialization replaces it, so rerunning STEP1 discards saved estimates. Keep a copy with your results if you need a record of a run, and use separate repository copies for simultaneous runs. Each step clears the MATLAB workspace and closes figures.
 
-### Settings to understand
+### Settings list
 
 | Setting | Meaning |
 | --- | --- |
@@ -106,7 +111,7 @@ For example, the illustrative indices `100` and `400` with `h_T = 5` ms imply an
 
 **Existing output behavior:** STEP4 deletes the entire `outputPath` when it exists and `overwriteOutput = true`. STEP5 independently replaces its enabled `byState` and `xyzt` directories when rerun, regardless of that flag. Use a dedicated destination with nothing else in it. Use unambiguous absolute paths without `..` or directory aliases; the existing path checks are string comparisons, not a complete protection against overlapping paths.
 
-## Outputs and coordinates
+### Outputs and coordinates
 
 ```text
 outputPath/
@@ -149,19 +154,6 @@ The calculations below describe the existing implementation.
 
 See [utils/README.md](utils/README.md) for the function map and input/output contracts.
 
-## Interpretation and troubleshooting
-
-This method assumes stable, repeatable motion and enough visual similarity between nearby layers. Heart-rate drift, changing anatomy or intensity, weak motion, and acquisition artifacts can affect the estimates. There is no outlier rejection, confidence weighting of periods, cycle averaging, subframe alignment, or spatial registration in the core workflow. Inspect the per-layer periods, fitted offsets, and reconstructed motion before interpreting results.
-
-| Symptom | What to check |
-| --- | --- |
-| Missing slice folder | The root must contain `1..numOfSlice`, not acquisition-specific names |
-| Unexpected motion or ordering | Verify zero-padded frame names and acquisition order |
-| Missing parameter or estimate | Run the preceding steps; do not reuse an archived `.mat` file |
-| Insufficient frames | Check the estimated period, frame interval, recording length, and requested output periods |
-| Out of memory | Keep `useParallel = false`; see the sequence-memory estimate above |
-| Volume looks mirrored or reversed | Check `mirrorXY` and `flipZ` against your acquisition geometry |
-| Output already exists | Choose another destination or deliberately configure output replacement |
 
 ## Repository map
 
@@ -179,6 +171,6 @@ The former `lightsheet_reconstruct/` scripts now live in the root. The old prepa
 
 ---
 
-This synchronization code is adapted from [Lee et al. (2016)](https://doi.org/10.1172/JCI83496), which used four-dimensional light-sheet microscopy to study how shear stress modulates cardiac trabeculation.
+This synchronization code is adapted from Lee et al. (2016), [4-Dimensional light-sheet microscopy to elucidate shear stress modulation of cardiac trabeculation](https://doi.org/10.1172/JCI83496). 
 
-The scripts in `PLOSCompBio/` are associated with [Wang et al. (2021)](https://doi.org/10.1371/journal.pcbi.1009175), which combined light-field and light-sheet imaging to study myocardial function and intracardiac blood flow during zebrafish development.
+The scripts in `PLOSCompBio/` are associated with Wang et al. (2021), [A hybrid of light-field and light-sheet imaging to study myocardial function and intracardiac blood flow during zebrafish development](https://doi.org/10.1371/journal.pcbi.1009175). The study used retrospective gating to synchronize myocardial recordings with light-field imaging of blood cells.

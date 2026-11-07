@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1048" height="294" viewBox="16 92 1048 294" overflow="hidden" role="img" aria-labelledby="title desc">
+<title id="title">Retrospective cardiac gating: a synthetic illustration</title>
+<desc id="desc">Five synthetic optical sections start at different phases. After prescribed phase offsets are removed, their periodic motion is synchronized and the sections form a coherent volume. This animation does not show microscopy data or MATLAB estimator output.</desc>
+<rect width="1080" height="470" fill="#f7f9fc"/>
+<g font-family="Segoe UI, Arial, sans-serif">
+<rect x="24" y="100" width="320" height="278" rx="8" fill="#fff" stroke="#dce4ec"/>
+<text x="40" y="140" font-size="20" font-weight="600" fill="#1c2d41">1  Recorded layers</text>
+<rect x="380" y="100" width="320" height="278" rx="8" fill="#fff" stroke="#dce4ec"/>
+<text x="396" y="140" font-size="20" font-weight="600" fill="#1c2d41">2  Phase-aligned layers</text>
+<rect x="736" y="100" width="320" height="278" rx="8" fill="#fff" stroke="#dce4ec"/>
+<text x="752" y="140" font-size="20" font-weight="600" fill="#1c2d41">3  Assembled volume</text>
+<text x="44" y="179" font-size="14" font-weight="400" fill="#5b6d7e">z1</text>
+<text x="400" y="179" font-size="14" font-weight="400" fill="#5b6d7e">z1</text>
+<ellipse cx="198" cy="174" rx="55.90" ry="13.00" fill="#1974c4" fill-opacity="0.08" stroke="#1974c4" stroke-width="3">
+<animate attributeName="rx" values="55.90;55.58;54.63;53.12;51.15;48.86;46.40;43.94;41.65;39.68;38.17;37.22;36.89;37.22;38.17;39.68;41.65;43.94;46.40;48.86;51.15;53.12;54.63;55.58;55.90" dur="3s" repeatCount="indefinite"/>
+<animate attributeName="ry" values="13.00;12.92;12.70;12.35;11.89;11.36;10.79;10.22;9.69;9.23;8.88;8.66;8.58;8.66;8.88;9.23;9.68;10.22;10.79;11.36;11.89;12.35;12.70;12.92;13.00" dur="3s" repeatCount="indefinite"/>
+</ellipse>
+<ellipse cx="554" cy="174" rx="55.90" ry="13.00" fill="#0a947f" fill-opacity="0.08" stroke="#0a947f" stroke-width="3">
+<animate attributeName="rx" values="55.90;55.58;54.63;53.12;51.15;48.86;46.40;43.94;41.65;39.68;38.17;37.22;36.89;37.22;38.17;39.68;41.65;43.94;46.40;48.86;51.15;53.12;54.63;55.58;55.90" dur="3s" repeatCount="indefinite"/>
+<animate attributeName="ry" values="13.00;12.92;12.70;12.35;11.89;11.36;10.79;10.22;9.69;9.23;8.88;8.66;8.58;8.66;8.88;9.23;9.68;10.22;10.79;11.36;11.89;12.35;12.70;12.92;13.00" dur="3s" repeatCount="indefinite"/>
+</ellipse>
+<text x="44" y="217" font-size="14" font-weight="400" fill="#5b6d7e">z2</text>
+<text x="400" y="217" font-size="14" font-weight="400" fill="#5b6d7e">z2</text>
+<ellipse cx="198" cy="212" rx="66.79" ry="11.47" fill="#1974c4" fill-opacity="0.08" stroke="#1974c4" stroke-width="3">
+<animate attributeName="rx" values="66.79;63.49;60.14;56.97;54.21;52.02;50.58;49.97;50.23;51.35;53.25;55.81;58.84;62.14;65.49;68.66;71.42;73.60;75.05;75.66;75.40;74.28;72.38;69.82;66.79" dur="3s" repeatCount="indefinite"/>
+<animate attributeName="ry" values="11.47;10.91;10.33;9.79;9.31;8.94;8.69;8.58;8.63;8.82;9.15;9.59;10.11;10.67;11.25;11.79;12.27;12.64;12.89;13.00;12.95;12.76;12.43;11.99;11.47" dur="3s" repeatCount="indefinite"/>
+</ellipse>
+<ellipse cx="554" cy="212" rx="75.68" ry="13.00" fill="#0a947f" fill-opacity="0.08" stroke="#0a947f" stroke-width="3">
+<animate attributeName="rx" values="75.68;75.24;73.96;71.91;69.25;66.14;62.81;59.48;56.38;53.72;51.67;50.39;49.95;50.39;51.67;53.72;56.38;59.48;62.81;66.14;69.25;71.91;73.96;75.24;75.68" dur="3s" repeatCount="indefinite"/>
+<animate attributeName="ry" values="13.00;12.92;12.70;12.35;11.89;11.36;10.79;10.22;9.69;9.23;8.88;8.66;8.58;8.66;8.88;9.23;9.68;10.22;10.79;11.36;11.89;12.35;12.70;12.92;13.00" dur="3s" repeatCount="indefinite"/>
+</ellipse>
+<text x="44" y="255" font-size="14" font-weight="400" fill="#5b6d7e">z3</text>
+<text x="400" y="255" font-size="14" font-weight="400" fill="#5b6d7e">z3</text>
+<ellipse cx="198" cy="250" rx="59.55" ry="9.00" fill="#1974c4" fill-opacity="0.08" stroke="#1974c4" stroke-width="3">
+<animate attributeName="rx" values="59.55;57.73;56.84;56.94;58.02;60.02;62.79;66.14;69.85;73.67;77.33;80.58;83.21;85.03;85.92;85.82;84.74;82.74;79.97;76.62;72.91;69.09;65.43;62.18;59.55" dur="3s" repeatCount="indefinite"/>
+<animate attributeName="ry" values="9.00;8.73;8.59;8.61;8.77;9.07;9.49;10.00;10.56;11.14;11.69;12.18;12.58;12.85;12.99;12.97;12.81;12.51;12.09;11.58;11.02;10.44;9.89;9.40;9.00" dur="3s" repeatCount="indefinite"/>
+</ellipse>
+<ellipse cx="554" cy="250" rx="86.00" ry="13.00" fill="#0a947f" fill-opacity="0.08" stroke="#0a947f" stroke-width="3">
+<animate attributeName="rx" values="86.00;85.50;84.04;81.72;78.69;75.16;71.38;67.60;64.07;61.04;58.72;57.26;56.76;57.26;58.72;61.04;64.07;67.60;71.38;75.16;78.69;81.72;84.04;85.50;86.00" dur="3s" repeatCount="indefinite"/>
+<animate attributeName="ry" values="13.00;12.92;12.70;12.35;11.89;11.36;10.79;10.22;9.69;9.23;8.88;8.66;8.58;8.66;8.88;9.23;9.68;10.22;10.79;11.36;11.89;12.35;12.70;12.92;13.00" dur="3s" repeatCount="indefinite"/>
+</ellipse>
+<text x="44" y="293" font-size="14" font-weight="400" fill="#5b6d7e">z4</text>
+<text x="400" y="293" font-size="14" font-weight="400" fill="#5b6d7e">z4</text>
+<ellipse cx="198" cy="288" rx="55.25" ry="9.49" fill="#1974c4" fill-opacity="0.08" stroke="#1974c4" stroke-width="3">
+<animate attributeName="rx" values="55.25;58.20;61.47;64.83;68.05;70.91;73.22;74.83;75.61;75.52;74.57;72.81;70.38;67.43;64.16;60.80;57.58;54.72;52.41;50.80;50.02;50.11;51.06;52.82;55.25" dur="3s" repeatCount="indefinite"/>
+<animate attributeName="ry" values="9.49;10.00;10.56;11.14;11.69;12.18;12.58;12.85;12.99;12.97;12.81;12.51;12.09;11.58;11.02;10.44;9.89;9.40;9.00;8.73;8.59;8.61;8.77;9.07;9.49" dur="3s" repeatCount="indefinite"/>
+</ellipse>
+<ellipse cx="554" cy="288" rx="75.68" ry="13.00" fill="#0a947f" fill-opacity="0.08" stroke="#0a947f" stroke-width="3">
+<animate attributeName="rx" values="75.68;75.24;73.96;71.91;69.25;66.14;62.81;59.48;56.38;53.72;51.67;50.39;49.95;50.39;51.67;53.72;56.38;59.48;62.81;66.14;69.25;71.91;73.96;75.24;75.68" dur="3s" repeatCount="indefinite"/>
+<animate attributeName="ry" values="13.00;12.92;12.70;12.35;11.89;11.36;10.79;10.22;9.69;9.23;8.88;8.66;8.58;8.66;8.88;9.23;9.68;10.22;10.79;11.36;11.89;12.35;12.70;12.92;13.00" dur="3s" repeatCount="indefinite"/>
+</ellipse>
+<text x="44" y="331" font-size="14" font-weight="400" fill="#5b6d7e">z5</text>
+<text x="400" y="331" font-size="14" font-weight="400" fill="#5b6d7e">z5</text>
+<ellipse cx="198" cy="326" rx="51.98" ry="12.09" fill="#1974c4" fill-opacity="0.08" stroke="#1974c4" stroke-width="3">
+<animate attributeName="rx" values="51.98;53.78;55.08;55.78;55.85;55.27;54.09;52.38;50.26;47.88;45.40;42.99;40.81;39.01;37.72;37.01;36.95;37.53;38.71;40.42;42.53;44.91;47.39;49.80;51.98" dur="3s" repeatCount="indefinite"/>
+<animate attributeName="ry" values="12.09;12.51;12.81;12.97;12.99;12.85;12.58;12.18;11.69;11.14;10.56;10.00;9.49;9.07;8.77;8.61;8.59;8.73;9.00;9.40;9.89;10.44;11.02;11.58;12.09" dur="3s" repeatCount="indefinite"/>
+</ellipse>
+<ellipse cx="554" cy="326" rx="55.90" ry="13.00" fill="#0a947f" fill-opacity="0.08" stroke="#0a947f" stroke-width="3">
+<animate attributeName="rx" values="55.90;55.58;54.63;53.12;51.15;48.86;46.40;43.94;41.65;39.68;38.17;37.22;36.89;37.22;38.17;39.68;41.65;43.94;46.40;48.86;51.15;53.12;54.63;55.58;55.90" dur="3s" repeatCount="indefinite"/>
+<animate attributeName="ry" values="13.00;12.92;12.70;12.35;11.89;11.36;10.79;10.22;9.69;9.23;8.88;8.66;8.58;8.66;8.88;9.23;9.68;10.22;10.79;11.36;11.89;12.35;12.70;12.92;13.00" dur="3s" repeatCount="indefinite"/>
+</ellipse>
+<ellipse cx="910" cy="200" rx="65.00" ry="28.00" fill="#0a947f" fill-opacity="0.08" stroke="#0a947f" stroke-width="3">
+<animate attributeName="rx" values="65.00;64.62;63.52;61.76;59.48;56.81;53.95;51.09;48.42;46.14;44.38;43.28;42.90;43.28;44.38;46.14;48.42;51.09;53.95;56.81;59.48;61.76;63.52;64.62;65.00" dur="3s" repeatCount="indefinite"/>
+<animate attributeName="ry" values="28.00;27.84;27.36;26.61;25.62;24.47;23.24;22.01;20.86;19.87;19.12;18.64;18.48;18.64;19.12;19.87;20.86;22.01;23.24;24.47;25.62;26.61;27.36;27.84;28.00" dur="3s" repeatCount="indefinite"/>
+</ellipse>
+<ellipse cx="904" cy="217" rx="88.00" ry="28.00" fill="#0a947f" fill-opacity="0.08" stroke="#0a947f" stroke-width="3">
+<animate attributeName="rx" values="88.00;87.49;86.00;83.62;80.52;76.91;73.04;69.17;65.56;62.46;60.08;58.59;58.08;58.59;60.08;62.46;65.56;69.17;73.04;76.91;80.52;83.62;86.00;87.49;88.00" dur="3s" repeatCount="indefinite"/>
+<animate attributeName="ry" values="28.00;27.84;27.36;26.61;25.62;24.47;23.24;22.01;20.86;19.87;19.12;18.64;18.48;18.64;19.12;19.87;20.86;22.01;23.24;24.47;25.62;26.61;27.36;27.84;28.00" dur="3s" repeatCount="indefinite"/>
+</ellipse>
+<ellipse cx="898" cy="234" rx="100.00" ry="28.00" fill="#0a947f" fill-opacity="0.08" stroke="#0a947f" stroke-width="3">
+<animate attributeName="rx" values="100.00;99.42;97.72;95.02;91.50;87.40;83.00;78.60;74.50;70.98;68.28;66.58;66.00;66.58;68.28;70.98;74.50;78.60;83.00;87.40;91.50;95.02;97.72;99.42;100.00" dur="3s" repeatCount="indefinite"/>
+<animate attributeName="ry" values="28.00;27.84;27.36;26.61;25.62;24.47;23.24;22.01;20.86;19.87;19.12;18.64;18.48;18.64;19.12;19.87;20.86;22.01;23.24;24.47;25.62;26.61;27.36;27.84;28.00" dur="3s" repeatCount="indefinite"/>
+</ellipse>
+<ellipse cx="892" cy="251" rx="88.00" ry="28.00" fill="#0a947f" fill-opacity="0.08" stroke="#0a947f" stroke-width="3">
+<animate attributeName="rx" values="88.00;87.49;86.00;83.62;80.52;76.91;73.04;69.17;65.56;62.46;60.08;58.59;58.08;58.59;60.08;62.46;65.56;69.17;73.04;76.91;80.52;83.62;86.00;87.49;88.00" dur="3s" repeatCount="indefinite"/>
+<animate attributeName="ry" values="28.00;27.84;27.36;26.61;25.62;24.47;23.24;22.01;20.86;19.87;19.12;18.64;18.48;18.64;19.12;19.87;20.86;22.01;23.24;24.47;25.62;26.61;27.36;27.84;28.00" dur="3s" repeatCount="indefinite"/>
+</ellipse>
+<ellipse cx="886" cy="268" rx="65.00" ry="28.00" fill="#0a947f" fill-opacity="0.08" stroke="#0a947f" stroke-width="3">
+<animate attributeName="rx" values="65.00;64.62;63.52;61.76;59.48;56.81;53.95;51.09;48.42;46.14;44.38;43.28;42.90;43.28;44.38;46.14;48.42;51.09;53.95;56.81;59.48;61.76;63.52;64.62;65.00" dur="3s" repeatCount="indefinite"/>
+<animate attributeName="ry" values="28.00;27.84;27.36;26.61;25.62;24.47;23.24;22.01;20.86;19.87;19.12;18.64;18.48;18.64;19.12;19.87;20.86;22.01;23.24;24.47;25.62;26.61;27.36;27.84;28.00" dur="3s" repeatCount="indefinite"/>
+</ellipse>
+<path d="M350 242h20m-6-6 6 6-6 6 M706 242h20m-6-6 6 6-6 6" fill="none" stroke="#5b6d7e" stroke-width="2"/>
+<text x="44" y="365" font-size="14" font-weight="400" fill="#5b6d7e">Different starting phases</text>
+<text x="400" y="365" font-size="14" font-weight="400" fill="#5b6d7e">One shared cardiac phase</text>
+<text x="752" y="365" font-size="14" font-weight="400" fill="#5b6d7e">The same motion through depth</text>
+</g>
+</svg>
