@@ -107,11 +107,8 @@ You can also run the five scripts individually in this order. They share a gener
 | `flipZ` | Reverse z-page order in the volume output only |
 | `overwriteOutput` | Allow STEP4 to delete an existing output root; historical default is `true` |
 
-For example, the illustrative indices `100` and `400` with `h_T = 5` ms imply an initial period of `(400 - 100)/3 * 5 = 500` ms. These are configuration examples, not measurements supplied with this repository.
 
-**Existing output behavior:** STEP4 deletes the entire `outputPath` when it exists and `overwriteOutput = true`. STEP5 independently replaces its enabled `byState` and `xyzt` directories when rerun, regardless of that flag. Use a dedicated destination with nothing else in it. Use unambiguous absolute paths without `..` or directory aliases; the existing path checks are string comparisons, not a complete protection against overlapping paths.
-
-### Outputs and coordinates
+### Outputs
 
 ```text
 outputPath/
@@ -133,26 +130,9 @@ outputPath/
 - With both orientation flags `false`, page `i` is layer `i` in its acquired orientation. `mirrorXY` flips columns, and `flipZ` reverses page order. Neither flag changes `bySlice` or `byState`.
 - TIFFs do not encode the scan's z spacing or a calibrated time axis. Retain acquisition metadata separately.
 
-Read one reconstructed state:
 
-```matlab
-addpath('utils');
-parameters = load('ls_recon_para.mat', 'outputPath');
-volume = imread3d(fullfile(parameters.outputPath, 'xyzt', 'state_0001.tif'));
-% volume is a double array [height, width, depth].
-```
 
-## Algorithm details
 
-The calculations below describe the existing implementation.
-
-1. **Period search.** The manual estimate is `T0 = (systolicPoint_4st - systolicPoint_1st) * h_T / 3`. Each layer is searched between `T0 * periodScaleLow - periodMargin` and `T0 * periodScaleHigh + periodMargin`. For a candidate period, frame times are folded modulo that period and sorted by phase. The objective sums differences between neighboring images in this phase order, including the existing normalized time-difference term. `fminbnd` minimizes this objective. The global period `t_p` is the arithmetic mean of layer estimates.
-2. **Relative shifts.** For each selected pair, the code searches integer shifts `s` from `-floor((B-1)/2)` through `floor(B/2)`, where `B = floor(t_p/h_T) + 1`. It sums squared pixel differences between frame `j` in the first layer and frame `j+s` in the second for `j = B : 3*B-1`. Positive `s` means matching a later frame in the second recording.
-3. **Phase fit.** For maximum separation `D` and `N` layers, the existing pair set uses starting layers `1..N-D` for each distance `1..D`; it is not every possible pair within that distance. A pair row in `A` is `+1` at the first layer and `-1` at the second. The fit solves `A*t ≈ -s`, weighted by `W`, with a zero-phase anchor for layer 1. Pair-row multipliers are `phaseWeight * 0.1^(distance-1)`, and the squared-error weights are their squares. The original normal-equation inverse is retained.
-4. **Frame selection.** Fitted offsets are wrapped modulo `t_p/h_T` and floored to integer frames. Each layer contributes frames `t(i)+1` through `t(i)+timePointNum`.
-5. **Assembly.** Corresponding selected frames are stacked in depth order for each output time state, applying only the optional orientation flips.
-
-See [utils/README.md](utils/README.md) for the function map and input/output contracts.
 
 
 ## Repository map
@@ -162,7 +142,7 @@ See [utils/README.md](utils/README.md) for the function map and input/output con
 - [preprocessing/](preprocessing/README.md): optional copying, renumbering, and TIFF-to-frame conversion, never called by the core runner.
 - [PLOSCompBio/](PLOSCompBio/README.md): historical light-sheet/light-field synchronization and registration scripts, plus their archived parameter files.
 
-The former `lightsheet_reconstruct/` scripts now live in the root. The old preparation step has moved to `preprocessing/prepare_ls_data.m`; the remaining computational steps have been renumbered without changing their calculations. The old dataset-specific parameter snapshot is preserved under `PLOSCompBio/historical_parameters/` and is not loaded by the core workflow.
+
 
 ## Contributors
 
