@@ -4,10 +4,6 @@ MATLAB code for **retrospective cardiac gating**, also described as post-acquisi
 
 At each depth, the microscope records several heartbeats before moving to the next layer. This project estimates the heartbeat period and the temporal offsets between layers, selects aligned image sequences, and assembles one 3D TIFF volume per time state.
 
-The root scripts provide the light-sheet-only synchronization workflow. The [PLOSCompBio/](PLOSCompBio/README.md) directory preserves the historical light-sheet/light-field synchronization and registration workflow.
-
-The present repository organization and documentation preserve the existing numerical implementation. No biological dataset is bundled; all paths and acquisition values in the scripts are examples to replace with your own.
-
 ## How it works
 
 The recordings start at different cardiac phases. Similar motion in nearby layers provides a temporal reference for aligning them. The resulting volumes combine images acquired at different times, assuming repeatable cardiac motion throughout the scan.
@@ -27,7 +23,7 @@ flowchart LR
     T --> V["Time 1: 3D volume<br/>Time 2: 3D volume<br/>…"]
 ```
 
-For an aligned time state `k`, the volume takes frame `t(i) + k` from layer `i`, where `t(i)` is that layer's estimated integer-frame offset. It does not interpolate images or perform spatial registration.
+For an aligned time state `k`, the reconstructed volume takes frame `t(i) + k` from layer `i`, where `t(i)` is that layer's estimated integer-frame offset. It does not interpolate images or perform spatial registration.
 
 ## Requirements
 
@@ -63,7 +59,6 @@ Input requirements:
 - Record several complete beats. With `B = floor(t_p / h_T) + 1`, the phase step checks for at least `3*B - 1` frames. To allow every candidate shift to compare the full window, provide at least `3*B - 1 + floor(B/2)` frames. The historical matching code skips out-of-range frames in the second sequence; it does not normalize for a shortened comparison.
 - The requested aligned sequence must also fit: `t(i) + timePointNum <= numOfImage` for every depth.
 
-The root workflow assumes this arrangement already exists. It does not copy, rename, crop, or otherwise prepare input data. If needed, consult the separate [preparation utilities](preprocessing/README.md) before starting.
 
 ### Run the reconstruction
 
