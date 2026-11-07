@@ -1,0 +1,184 @@
+# Retrospective heartbeat synchronization for 4D light-sheet imaging
+
+Reconstruct a **pseudo-3D zebrafish embryo heart over time** from light-sheet image sequences acquired at successive depths. At each depth, the microscope records several heartbeats before moving to the next layer. This project estimates the heartbeat period and the temporal offsets between layers, selects aligned image sequences, and assembles one 3D TIFF volume per time state.
+
+The root scripts provide the light-sheet-only synchronization workflow. The [PLOSCompBio/](PLOSCompBio/README.md) directory preserves the historical light-sheet/light-field synchronization and registration workflow.
+
+The present repository organization and documentation preserve the existing numerical implementation. No biological dataset is bundled; all paths and acquisition values in the scripts are examples to replace with your own.
+
+## How it works
+
+The recordings start at different cardiac phases. Similar motion in nearby layers provides a temporal reference for aligning them. The resulting volumes combine images acquired at different times, assuming repeatable cardiac motion throughout the scan.
+
+```mermaid
+flowchart LR
+    A["Depth 1: repeated heartbeats"] --> P["Estimate period at each depth"]
+    B["Depth 2: different starting phase"] --> P
+    C["Depth N: different starting phase"] --> P
+    P --> M["Mean heartbeat period"]
+    M --> S["Compare nearby layers<br/>Estimate relative shifts"]
+    S --> F["Fit a phase offset<br/>for each layer"]
+    F --> T["Select aligned frames<br/>at every depth"]
+    T --> V["Time 1: 3D volume<br/>Time 2: 3D volume<br/>…"]
+```
+
+For an aligned time state `k`, the volume takes frame `t(i) + k` from layer `i`, where `t(i)` is that layer's estimated integer-frame offset. It does not interpolate images or perform spatial registration.
+
+## Requirements
+
+- **MATLAB on Windows.** The preserved image-loading helpers use Windows path separators. Other operating systems have not been validated.
+- **Parallel Computing Toolbox is optional**, used only when `useParallel = true`. Serial processing is the default. Period optimization uses MATLAB's `fminbnd`; it does not require Optimization Toolbox.
+- Enough memory to load complete layer recordings as `double` arrays. A single `H × W × F` sequence uses approximately `8 × H × W × F` bytes before temporary arrays; pair matching loads two sequences. Parallel workers multiply this demand.
+
+
+## Arrange your input first
+
+Set `lsSourcePath` to a folder with **one subfolder per depth**, named `1`, `2`, …, `numOfSlice` in the desired z order. Each subfolder must contain a time sequence of **single-page, grayscale `.tif` files**.
+
+```text
+C:\example_data\light_sheet\       ← lsSourcePath
+├── 1\                            ← first depth
+│   ├── 0001.tif                   ← first acquired frame
+│   ├── 0002.tif
+│   └── ...
+├── 2\                            ← second depth
+│   ├── 0001.tif
+│   ├── 0002.tif
+│   └── ...
+└── 10\                           ← example last depth
+    └── ...
+```
+
+Input requirements:
+
+- Frame filenames must sort into acquisition order. Use consistent zero padding: `0001.tif`, `0002.tif`, … . The code uses `dir()` order, not timestamps or natural-number sorting; `1.tif`, `10.tif`, `2.tif` is unsuitable.
+- Use matching image dimensions across all frames and depths, and a common frame interval. The core reads only `.tif`; it does not unpack multipage recordings or accept RGB images as time sequences.
+- Supply the same number of frames at each depth and set `numOfImage` accordingly. The estimators read **every `.tif` in each folder**, even if `numOfImage` is smaller. Keep unrelated TIFFs outside these folders.
+- `uint16` grayscale input is the intended convention. Alignment and volume assembly write `uint16`; they do not preserve arbitrary input types or microscope metadata.
+- Record several complete beats. With `B = floor(t_p / h_T) + 1`, the phase step checks for at least `3*B - 1` frames. To allow every candidate shift to compare the full window, provide at least `3*B - 1 + floor(B/2)` frames. The historical matching code skips out-of-range frames in the second sequence; it does not normalize for a shortened comparison.
+- The requested aligned sequence must also fit: `t(i) + timePointNum <= numOfImage` for every depth.
+
+The root workflow assumes this arrangement already exists. It does not copy, rename, crop, or otherwise prepare input data. If needed, consult the separate [preparation utilities](preprocessing/README.md) before starting.
+
+## Run the reconstruction
+
+1. Open MATLAB and set its current folder to this repository's root.
+2. Edit [STEP1_init.m](STEP1_init.m). Replace both example paths and the acquisition/heartbeat settings with values for your recording.
+3. Run:
+
+   ```matlab
+   ls_reconstruct
+   ```
+
+The script runs these five steps in order:
+
+| File | Purpose | Saved result |
+| --- | --- | --- |
+| [STEP1_init.m](STEP1_init.m) | Configure paths, acquisition settings, search bounds, and output options | Creates `ls_recon_para.mat` |
+| [STEP2_compute_period.m](STEP2_compute_period.m) | Estimate a period at each layer and take their arithmetic mean | `t_p_candidate`, `t_p` |
+| [STEP3_compute_phase.m](STEP3_compute_phase.m) | Measure relative shifts and fit layer offsets | `shiftList`, `t`, `timePointNum` |
+| [STEP4_align_slices.m](STEP4_align_slices.m) | Select the contiguous aligned frames at each layer | `bySlice/`, `bySliceDir` |
+| [STEP5_assemble_xyzt.m](STEP5_assemble_xyzt.m) | Group frames by time and assemble z stacks | Optional `byState/` and `xyzt/` |
+
+You can also run the five scripts individually in this order. They share a generated `ls_recon_para.mat` in the root; later steps load it rather than rereading settings from `STEP1_init.m`. Initialization replaces it, so rerunning STEP1 discards saved estimates. Keep a copy with your results if you need a record of a run, and use separate repository copies for simultaneous runs. Each step clears the MATLAB workspace and closes figures.
+
+### Settings to understand
+
+| Setting | Meaning |
+| --- | --- |
+| `lsSourcePath` | Absolute path to the arranged input folders |
+| `outputPath` | Dedicated reconstruction destination, separate from the input |
+| `numOfSlice` | Number of depth folders; at least 3 |
+| `numOfImage` | Recorded frames per depth; match the actual TIFF count |
+| `h_T` | Time between consecutive frames, in milliseconds; include acquisition gaps |
+| `systolicPoint_1st`, `systolicPoint_4st` | One-based frame indices of the first and fourth identified systolic events in a representative recording; they span three complete cycles |
+| `numOfPeriod` | Number of cardiac periods to export |
+| `maxSliceConsidered` | Maximum depth-index separation used in pair matching |
+| `periodScaleLow`, `periodScaleHigh`, `periodMargin` | Define the search interval around the manually estimated period; margin is in ms |
+| `phaseWeight` | Base multiplier of pair rows in the weighted phase fit |
+| `useParallel` | Enable parallel period and pair-shift estimation; default `false` |
+| `saveByState`, `saveVolumes` | Save time-state folders and/or multipage TIFF volumes; at least one must be `true` |
+| `mirrorXY` | Flip image columns left-to-right in the volume output only |
+| `flipZ` | Reverse z-page order in the volume output only |
+| `overwriteOutput` | Allow STEP4 to delete an existing output root; historical default is `true` |
+
+For example, the illustrative indices `100` and `400` with `h_T = 5` ms imply an initial period of `(400 - 100)/3 * 5 = 500` ms. These are configuration examples, not measurements supplied with this repository.
+
+**Existing output behavior:** STEP4 deletes the entire `outputPath` when it exists and `overwriteOutput = true`. STEP5 independently replaces its enabled `byState` and `xyzt` directories when rerun, regardless of that flag. Use a dedicated destination with nothing else in it. Use unambiguous absolute paths without `..` or directory aliases; the existing path checks are string comparisons, not a complete protection against overlapping paths.
+
+## Outputs and coordinates
+
+```text
+outputPath/
+├── bySlice/                      always written
+│   ├── 1/0001.tif, 0002.tif, ...  aligned sequence at depth 1
+│   └── ...
+├── byState/                      when saveByState = true
+│   ├── 0001/slice_1.tif, slice_2.tif, ...
+│   └── ...
+└── xyzt/                         when saveVolumes = true
+    ├── state_0001.tif            one TIFF page per depth
+    ├── state_0002.tif
+    └── ...
+```
+
+- **x** is the image column; **y** is the row; **z** is the TIFF page; **t** is the state filename index. MATLAB arrays are `[height, width, depth]`, or `[y, x, z]`.
+- The number of states is `floor(numOfPeriod * floor(t_p / h_T))`. Adjacent states retain the acquired frame interval `h_T`; no temporal resampling is performed.
+- The first layer defines phase zero. State 1 is not automatically a named biological event such as systole.
+- With both orientation flags `false`, page `i` is layer `i` in its acquired orientation. `mirrorXY` flips columns, and `flipZ` reverses page order. Neither flag changes `bySlice` or `byState`.
+- TIFFs do not encode the scan's z spacing or a calibrated time axis. Retain acquisition metadata separately.
+
+Read one reconstructed state:
+
+```matlab
+addpath('utils');
+parameters = load('ls_recon_para.mat', 'outputPath');
+volume = imread3d(fullfile(parameters.outputPath, 'xyzt', 'state_0001.tif'));
+% volume is a double array [height, width, depth].
+```
+
+## Algorithm details
+
+The calculations below describe the existing implementation.
+
+1. **Period search.** The manual estimate is `T0 = (systolicPoint_4st - systolicPoint_1st) * h_T / 3`. Each layer is searched between `T0 * periodScaleLow - periodMargin` and `T0 * periodScaleHigh + periodMargin`. For a candidate period, frame times are folded modulo that period and sorted by phase. The objective sums differences between neighboring images in this phase order, including the existing normalized time-difference term. `fminbnd` minimizes this objective. The global period `t_p` is the arithmetic mean of layer estimates.
+2. **Relative shifts.** For each selected pair, the code searches integer shifts `s` from `-floor((B-1)/2)` through `floor(B/2)`, where `B = floor(t_p/h_T) + 1`. It sums squared pixel differences between frame `j` in the first layer and frame `j+s` in the second for `j = B : 3*B-1`. Positive `s` means matching a later frame in the second recording.
+3. **Phase fit.** For maximum separation `D` and `N` layers, the existing pair set uses starting layers `1..N-D` for each distance `1..D`; it is not every possible pair within that distance. A pair row in `A` is `+1` at the first layer and `-1` at the second. The fit solves `A*t ≈ -s`, weighted by `W`, with a zero-phase anchor for layer 1. Pair-row multipliers are `phaseWeight * 0.1^(distance-1)`, and the squared-error weights are their squares. The original normal-equation inverse is retained.
+4. **Frame selection.** Fitted offsets are wrapped modulo `t_p/h_T` and floored to integer frames. Each layer contributes frames `t(i)+1` through `t(i)+timePointNum`.
+5. **Assembly.** Corresponding selected frames are stacked in depth order for each output time state, applying only the optional orientation flips.
+
+See [utils/README.md](utils/README.md) for the function map and input/output contracts.
+
+## Interpretation and troubleshooting
+
+This method assumes stable, repeatable motion and enough visual similarity between nearby layers. Heart-rate drift, changing anatomy or intensity, weak motion, and acquisition artifacts can affect the estimates. There is no outlier rejection, confidence weighting of periods, cycle averaging, subframe alignment, or spatial registration in the core workflow. Inspect the per-layer periods, fitted offsets, and reconstructed motion before interpreting results.
+
+| Symptom | What to check |
+| --- | --- |
+| Missing slice folder | The root must contain `1..numOfSlice`, not acquisition-specific names |
+| Unexpected motion or ordering | Verify zero-padded frame names and acquisition order |
+| Missing parameter or estimate | Run the preceding steps; do not reuse an archived `.mat` file |
+| Insufficient frames | Check the estimated period, frame interval, recording length, and requested output periods |
+| Out of memory | Keep `useParallel = false`; see the sequence-memory estimate above |
+| Volume looks mirrored or reversed | Check `mirrorXY` and `flipZ` against your acquisition geometry |
+| Output already exists | Choose another destination or deliberately configure output replacement |
+
+## Repository map
+
+- Root scripts: the five-step light-sheet reconstruction and its runner.
+- [utils/](utils/README.md): preserved numerical helpers, TIFF reader, and documented historical utilities.
+- [preprocessing/](preprocessing/README.md): optional copying, renumbering, and TIFF-to-frame conversion, never called by the core runner.
+- [PLOSCompBio/](PLOSCompBio/README.md): historical light-sheet/light-field synchronization and registration scripts, plus their archived parameter files.
+
+The former `lightsheet_reconstruct/` scripts now live in the root. The old preparation step has moved to `preprocessing/prepare_ls_data.m`; the remaining computational steps have been renumbered without changing their calculations. The old dataset-specific parameter snapshot is preserved under `PLOSCompBio/historical_parameters/` and is not loaded by the core workflow.
+
+## Contributors
+
+- [aaronzq](https://github.com/aaronzq)
+- [Ruipeng-Nyx](https://github.com/Ruipeng-Nyx)
+
+---
+
+This synchronization code is adapted from [Lee et al. (2016)](https://doi.org/10.1172/JCI83496), which used four-dimensional light-sheet microscopy to study how shear stress modulates cardiac trabeculation.
+
+The scripts in `PLOSCompBio/` are associated with [Wang et al. (2021)](https://doi.org/10.1371/journal.pcbi.1009175), which combined light-field and light-sheet imaging to study myocardial function and intracardiac blood flow during zebrafish development.

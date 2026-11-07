@@ -1,10 +1,8 @@
 function imageStack = imread3d(file)
-%IMREAD3D2 Reads 3D TIFF stack
-%   Inputs:
-%       file - file name of TIFF stack
-%       Width - X resolution of file
-%       Height - Y resolution of file
-%       Depth - number of slices in file
+% IMREAD3D Read all pages of a grayscale TIFF in stored order.
+% imageStack = imread3d(file) returns double [height,width,depth].
+% file is the TIFF path; pages are expected to have matching dimensions.
+% No spatial transforms, intensity normalization, or metadata are returned.
 
     tiffInfo = imfinfo(file);
 %     assert(tiffInfo(1).BitDepth == 8, sprintf('%s is not in 8-bit\n convert this image into 8-bit in ImageJ first\n', tiffInfo(1).Filename))

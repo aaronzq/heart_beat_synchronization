@@ -1,27 +1,10 @@
-% Resampling images with respect to the obtained period
-
-% Parameters Desciption
-%   x: horizontal pixel index
-%   y: vertical pixel index
-%   z: slice index
-%   h_T: imaging sampling time step
-%   N_T: number of total period considered
-%   N_t: number of considered frame over total time
-%   L: total time considered
-%   T_p: candidate Period.
-
-
-% Input
-%   images: all the images considered
-%   h_T: imaging sampling step
-%   T_p: movement period
-
-
-% Output
-%   images_resampled: resampled image data
-
-
 function [images_resampled] = getResample(images, T_p, N_T, N_t, h_T_original)
+% GETRESAMPLE Historical temporal interpolation helper; not in the core flow.
+% images is [height,width,frame]. T_p and h_T_original are milliseconds.
+% N_T is the number of periods; N_t is the requested output frame count.
+% Returns uint16 [height,width,N_t] using the existing interpolation loop.
+% A short input prints a message but does not stop execution.
+% Preserved for historical callers; root reconstruction does not resample.
 
     L = T_p * N_T;
     h_T = L / N_t;

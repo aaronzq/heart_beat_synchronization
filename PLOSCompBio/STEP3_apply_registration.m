@@ -1,13 +1,17 @@
+% Historical spatial/temporal registration of reconstructed LF volumes.
+% Run from PLOSCompBio/ with acquisition-specific sync_para.mat and
+% trans_matrix.mat. Writes registered uint16 volumes. Requires Image Processing Toolbox.
+
 %% Apply transformation to light-field recon images
 %  This is a script to apply spatial and temporal registration to the light
 %  field reconstrcuted images to co-locate with light-sheet images
 clear all;
-addpath('./utils');
+addpath(fullfile(fileparts(mfilename('fullpath')), '..', 'utils'));
 load('sync_para.mat');
 load('trans_matrix.mat');
 
 %% Files io
-lfLoadPath = 'E:\Zhaoqiang\processedData\plos_revision_5dpf_20210104\fish2\blood';
+lfLoadPath = 'C:\example_data\light_field_volumes';
 outPath = [lfLoadPath '\registered'];
 
 %% Data parameters

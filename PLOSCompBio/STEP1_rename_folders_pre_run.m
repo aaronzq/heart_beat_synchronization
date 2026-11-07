@@ -1,3 +1,7 @@
+% Historical data preparation: copy LS layers and insert an LF reference.
+% Edit example paths and acquisition settings; run from PLOSCompBio/.
+% Writes numbered folders and sync_para.mat. Not called by the root runner.
+
 clear all;
 %% rename the folder
 % insert the light-field reference folder in the middle of light-sheet data
@@ -11,9 +15,9 @@ lightfieldRef = 47;   % which folder of light-sheet images to insert light-field
                       %      lightfieldRef = 27. And there are 27 folders
                       %      ahead 
 imageNum = 450;
-lssourcePath = 'G:\Zhaoqiang\spim_room\plos_revision_3dpf_20210114\data\fish5\ls\gfp';
-lfsourcePath = 'G:\Zhaoqiang\spim_room\plos_revision_3dpf_20210114\data\fish5\lf\gfp';
-outputPath = 'D:\Zhaoqiang\RawData';
+lssourcePath = 'C:\example_data\light_sheet_raw';
+lfsourcePath = 'C:\example_data\light_field_reference';
+outputPath = 'C:\example_data\combined';
 
 
 

@@ -1,5 +1,10 @@
+% Historical combined LS/LF temporal synchronization.
+% Run from PLOSCompBio/ after preparing sync_para.mat and input folders.
+% Retains demonstration parameter overrides and existing output replacement.
+% Writes aligned images, volumes, and synchronization estimates; see README.md.
+
 clear all;
-addpath('./utils');
+addpath(fullfile(fileparts(mfilename('fullpath')), '..', 'utils'));
 load('sync_para.mat');
 
 
@@ -12,7 +17,7 @@ numOfSlice = 3;
 numOfImage = 450;
 refOfLightfield = 2;
 
-baseDir = ['D:\Zhaoqiang\RawData'];
+baseDir = ['C:\example_data\combined'];
 outputDir = [baseDir '\output'];
 h_T = 5;  %exposure time (ms)
 numOfPeriod = 2; %how many period you want to output

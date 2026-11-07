@@ -1,9 +1,14 @@
+% Historical interactive XY calibration using corresponding image points.
+% Edit example images and calibration settings; run from PLOSCompBio/.
+% Requires Image Processing Toolbox and interactive point selection.
+% Writes mytform and upSampleRatio to trans_matrix.mat.
+
 clear all;
 
 %% user defined parameters
-filePath = 'G:\Zhaoqiang\spim_room\plos_revision_20210104\reg'; %folder path
-lf = 'Recon3D_lf_5572400003_N11-18.tif'; % light-field recon single slice
-wf = 'wf_5601600001.tif'; %wide field single image
+filePath = 'C:\example_data\registration'; %folder path
+lf = 'example_light_field_slice.tif'; % light-field recon single slice
+wf = 'example_wide_field_image.tif'; %wide field single image
 upSampleRatio = 23.69/11; %compensate for the downsampling during light-field recon
 lf_lt = 1000;
 lf_ht = 5000;

@@ -1,14 +1,10 @@
-% Relative Shift Determination
-
-% Input
-%   images: all the images considered
-%   h_T: imaging sampling step
-
-
-% Output
-%   Q_i_j: matrix entry storing minimum time shift between slice_i and slice_j 
-
 function [Q_i_j] = getRelativeShift(startIndex_1)
+% GETRELATIVESHIFT Search integer temporal offsets between loaded layers.
+% Q_i_j = getRelativeShift(startIndex_1) returns a signed frame shift.
+% Reads globals images1/images2 through getRelativeShiftMatchEnergy and
+% sets global startIndex = startIndex_1 (normally floor(t_p/h_T)+1).
+% Searches -floor((startIndex-1)/2):floor(startIndex/2).
+% Equal costs keep the first candidate in this ordered search.
 
     global startIndex;
     startIndex = startIndex_1;

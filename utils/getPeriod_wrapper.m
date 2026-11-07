@@ -1,6 +1,12 @@
 function [T_p, images_resampled] = getPeriod_wrapper(path, h_T_1, th1, th2)
+% GETPERIOD_WRAPPER Estimate the period of one on-disk layer recording.
+% T_p = getPeriod_wrapper(path, h_T_1, th1, th2) returns milliseconds.
+% path contains chronologically ordered, matching grayscale .tif frames.
+% h_T_1 is the frame interval in ms; th1/th2 bound the period search in ms.
+% All TIFFs are loaded as double [height,width,frame] into globals images
+% and h_T. Calls getPeriod. Paths retain Windows separators.
+% Request only T_p: the historical images_resampled output is unassigned.
 
-%%  read images
     imageList = dir([path '\*.tif']); % obtain image list    
     numOfImage = length(imageList); % obtain num of images    
     

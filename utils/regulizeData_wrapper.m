@@ -1,4 +1,11 @@
 function regulizeData_wrapper(baseDir, outputDir, T_p, t, h_T, numOfSlice, numOfPeriod, numOfImage)
+% REGULIZEDATA_WRAPPER Historical crop-and-resample exporter.
+% baseDir contains numbered layer folders; outputDir is the destination.
+% T_p and h_T are milliseconds; t contains per-layer frame offsets.
+% numOfSlice selects layers, numOfPeriod selects cycles, and numOfImage is
+% the resampled output count per layer. Uses getResample and writes uint16.
+% Prompts before deleting an existing outputDir. Its crop convention differs
+% from STEP4_align_slices; not called by the core workflow.
 
     if exist(outputDir,'dir') == 7
         

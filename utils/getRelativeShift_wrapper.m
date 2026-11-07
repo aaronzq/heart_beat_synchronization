@@ -1,4 +1,11 @@
 function [Q_i_j] = getRelativeShift_wrapper( baseDir, index1, index2, t_p, h_T)
+% GETRELATIVESHIFT_WRAPPER Match two numbered layer recordings.
+% Q_i_j = getRelativeShift_wrapper(baseDir,index1,index2,t_p,h_T).
+% t_p and h_T are milliseconds; index1/index2 name numeric depth folders.
+% Returns a signed integer frame shift: frame j in layer index1 matches
+% frame j+Q_i_j in layer index2. Reads every .tif, in dir order, as double
+% into globals images1/images2 [height,width,frame]. Dimensions must match.
+% Calls getRelativeShift with floor(t_p/h_T)+1; uses Windows paths.
 
     global images1;
     global images2;

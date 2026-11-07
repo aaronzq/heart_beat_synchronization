@@ -1,19 +1,9 @@
-% Despersion Objective Function Calculation
-
-% Parameters Description
-
-
-% Input
-% images: the matrix storing all images of a aticular slice on different
-%         time instances
-% timeInstances: the array storing the phase locked time indices
-%         of all images in the first period
-% T_p: period
-
-% Output
-% Signal Dispersion Energy
-
 function [energy] = getPeriodMatchEnergy(T_p)
+% GETPERIODMATCHENERGY Score a candidate heartbeat period in milliseconds.
+% Reads globals images [height,width,frame] and h_T (frame interval in ms).
+% Folds acquisition times modulo T_p, sorts the frames by folded phase,
+% and sums neighboring image differences including the normalized time term.
+% Returns a scalar objective for getPeriod; there is no last-to-first term.
 
     global images;
     global h_T;
@@ -21,14 +11,12 @@ function [energy] = getPeriodMatchEnergy(T_p)
     [height, width, numOfImages] = size(images);
     
     timeInstances = 0:numOfImages-1; % initialize an array of all time indexes
-    timeInstances = timeInstances .* h_T; % conver the array to times
+    timeInstances = timeInstances .* h_T; % convert frame indices to milliseconds
     timeInstances = mod(timeInstances, T_p); % phase lock w.r. to different candidate period
  
     energy = 0;
     timeDiff = 0;
-    buffer = zeros(height,width); % buffer is used to store the intance difference
-                                  % of two frames on two adjacent time
-                                  % instance
+    buffer = zeros(height,width); % per-pixel squared image differences
     
     [timeInstances_sort, index] = sort(timeInstances , 'ascend'); % sort time instances into ascending order
     
@@ -38,11 +26,9 @@ function [energy] = getPeriodMatchEnergy(T_p)
         buffer = buffer.^2;
         
         timeDiff = timeInstances_sort(i+1) - timeInstances_sort(i);
-        timeDiff = timeDiff^2 / T_p^2; % Using T_p to normalize will kill the weight of timeDiff, as the number becomes
-                                       % too small compare to image intancity difference, we can come back later to think about this
+        timeDiff = timeDiff^2 / T_p^2; % normalized squared difference in folded time
         
         buffer = buffer + timeDiff;
-        energy = energy + sqrt(sum(sum(buffer))); % I implement this line exactly as paper, but I think sqrt() is not necessary
-                                                  % We can come back later to compare the difference
+        energy = energy + sqrt(sum(sum(buffer))); % original dispersion objective
     end
 

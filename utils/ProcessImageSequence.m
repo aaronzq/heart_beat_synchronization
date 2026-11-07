@@ -1,4 +1,10 @@
 function [T_p, images_resampled] = ProcessImageSequence( path , h_T_1 , resample )
+% PROCESSIMAGESEQUENCE Incomplete historical entry point; not a core API.
+% Intended inputs: layer path, frame interval h_T_1 (ms), resample option.
+% Loads double images and sets global images/h_T. This archived function
+% calls getPeriod and getRelativeShift without required arguments and does
+% not assign images_resampled. It is preserved, not repaired.
+% Use the repository-root ls_reconstruct script for reconstruction.
 
     if nargin < 3
         resample =  'noresample'; % default with no resample

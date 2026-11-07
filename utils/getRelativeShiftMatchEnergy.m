@@ -1,19 +1,11 @@
- % Despersion Objective Function Calculation
-
-% Parameters Description
-
-
-% Input
-% images: the matrix storing all images of a aticular slice on different
-%         time instances
-% timeInstances: the array storing the phase locked time indices
-%         of all images in the first period
-% T_p: period
-
-% Output
-% Relative Shift Match Energy
-
 function [energy] = getRelativeShiftMatchEnergy(s)
+% GETRELATIVESHIFTMATCHENERGY Sum squared pixel differences for shift s.
+% s is an integer number of frames. Globals images1/images2 have dimensions
+% [height,width,frame]; global startIndex defines the comparison window.
+% Compares images1(:,:,j) with images2(:,:,j+s) for
+% j = startIndex:3*startIndex-1. Out-of-range frames in images2 are skipped;
+% the score is not normalized by the number of comparisons.
+% The caller must provide enough frames in images1.
 
     global images1;
     global images2;
@@ -23,9 +15,7 @@ function [energy] = getRelativeShiftMatchEnergy(s)
     [height, width, numOfImages2] = size(images2);
  
     energy = 0;
-    buffer = zeros(height,width); % buffer is used to store the intance difference
-                                  % of two frames on two adjacent time
-                                  % instance 
+    buffer = zeros(height,width); % per-pixel squared image differences
     
     for i = startIndex:3*startIndex-1
         
